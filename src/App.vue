@@ -13,10 +13,13 @@
     </button>
   </div>
   <div>你选择了【{{ selectGirl }}】为你服务</div>
+  <div><button @click="overAction">点餐完毕</button></div>
+  <div>{{ overText }}</div>
 </template>
 
 <script lang="ts">
 import {
+  ref,
   defineComponent,
   onBeforeMount,
   onMounted,
@@ -24,6 +27,9 @@ import {
   onUpdated,
   reactive,
   toRefs,
+  // onRenderTracked,
+  // onRenderTriggered,
+  watch,
 } from "vue";
 interface DataProps {
   girls: string[];
@@ -54,6 +60,12 @@ export default defineComponent({
     onUpdated(() => {
       console.log("5-组件更新之后-----onUpdated()");
     });
+    // onRenderTracked((event) => {
+    //   console.log("状态跟踪", event);
+    // });
+    // onRenderTriggered((event) => {
+    //   console.log("状态跟踪", event);
+    // });
     const data: DataProps = reactive({
       girls: ["1号", "2号", "3号"],
       selectGirl: "",
@@ -61,9 +73,20 @@ export default defineComponent({
         data.selectGirl = data.girls[index];
       },
     });
+    const overText = ref("红浪漫");
+    const overAction = () => {
+      overText.value = overText.value + "点餐完成 | ";
+      // document.title = overText.value;
+    };
     const reactData = toRefs(data);
+    watch([overText, reactData.selectGirl], (newValue, oldValue) => {
+      console.log("watch", newValue);
+    });
+
     return {
       ...reactData,
+      overText,
+      overAction,
     };
   },
 });
