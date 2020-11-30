@@ -4,6 +4,9 @@
   <div>
     <h2>欢迎光临红浪漫洗浴中心</h2>
     <div>请选择一位美女为你服务</div>
+    <div v-if="loading">Loading.....</div>
+    <img v-if="loaded"
+         :src="result.message" />
   </div>
   <div>
     <button @click="selectGirlFun(index)"
@@ -15,6 +18,8 @@
   <div>你选择了【{{ selectGirl }}】为你服务</div>
   <div><button @click="overAction">点餐完毕</button></div>
   <div>{{ overText }}</div>
+  <div><button @click="getNowTime">现在时间</button>:{{nowTime}}</div>
+  <modal></modal>
 </template>
 
 <script lang="ts">
@@ -31,6 +36,10 @@ import {
   // onRenderTriggered,
   watch,
 } from "vue";
+import { nowTime, getNowTime } from "./hooks/useNowTime";
+import useUrlAxios from "./hooks/useAxios";
+import modal from "./components/Modal.vue";
+
 interface DataProps {
   girls: string[];
   selectGirl: string;
@@ -39,7 +48,7 @@ interface DataProps {
 
 export default defineComponent({
   name: "App",
-  components: {},
+  components: { modal },
   setup() {
     console.log("1-开始创建组件-----setup()");
     // const girls = ref(["1号", "2号", "3号"]);
@@ -83,10 +92,19 @@ export default defineComponent({
       console.log("watch", newValue);
     });
 
+    const { result, loading, loaded } = useUrlAxios(
+      "https://dog.ceo/api/breeds/image/random"
+    );
+
     return {
       ...reactData,
       overText,
       overAction,
+      nowTime,
+      getNowTime,
+      result,
+      loading,
+      loaded,
     };
   },
 });
