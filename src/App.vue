@@ -1,4 +1,14 @@
 <template>
+  <div>
+    <Suspense>
+      <template #default>
+        <AsyncShow />
+      </template>
+      <template #fallback>
+        <h1>Loading...</h1>
+      </template>
+    </Suspense>
+  </div>
   <img alt="Vue logo"
        src="./assets/logo.png" />
   <div>
@@ -20,6 +30,7 @@
   <div>{{ overText }}</div>
   <div><button @click="getNowTime">现在时间</button>:{{nowTime}}</div>
   <modal></modal>
+
 </template>
 
 <script lang="ts">
@@ -39,6 +50,7 @@ import {
 import { nowTime, getNowTime } from "./hooks/useNowTime";
 import useUrlAxios from "./hooks/useAxios";
 import modal from "./components/Modal.vue";
+import AsyncShow from "./components/AsyncShow.vue";
 
 interface DataProps {
   girls: string[];
@@ -48,7 +60,7 @@ interface DataProps {
 
 export default defineComponent({
   name: "App",
-  components: { modal },
+  components: { modal, AsyncShow },
   setup() {
     console.log("1-开始创建组件-----setup()");
     // const girls = ref(["1号", "2号", "3号"]);
